@@ -1,6 +1,7 @@
 import streamlit as st
 import boto3
 import os
+import hashlib
 from botocore.exceptions import NoCredentialsError
 from dotenv import load_dotenv
 
@@ -11,6 +12,9 @@ load_dotenv()
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'your_access_key')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'your_secret_key')
 S3_BUCKET_NAME = os.getenv('S3_BUCKET_NAME', 'hult-unstructured-data-challenge')
+
+# Password for application access
+APP_PASSWORD = os.getenv('APP_PASSWORD', 'HultDataPirates-Arrr')
 
 def upload_to_s3(file, bucket, object_name):
     s3_client = boto3.client(
@@ -54,8 +58,33 @@ def delete_file(bucket, object_name):
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["password"] == APP_PASSWORD:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # don't store password
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the password is validated.
+    if "password_correct" in st.session_state:
+        return st.session_state["password_correct"]
+
+    # First run, show input for password.
+    st.text_input(
+        "Password", type="password", on_change=password_entered, key="password"
+    )
+    return False
+
 def main():
     st.title("S3 File Manager")
+    
+    if not check_password():
+        st.warning("Please enter the correct password to access the application.")
+        return
 
     # Select team
     team_id = st.selectbox("Select Team", list(range(1, 13)))

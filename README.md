@@ -8,6 +8,7 @@ A Streamlit application that allows users to upload, view, and delete files in a
 - **File Upload**: Drag and drop or browse to select files
 - **File Management**: View and delete files in your team's folder
 - **Secure**: Uses environment variables for AWS credentials
+- **Password Protected**: Access control via password authentication
 
 ## Requirements
 
@@ -26,10 +27,10 @@ pip install -r requirements.txt
 ```
 
 3. Set up your environment variables:
-   1. Copy `.env.example` to `.env`
-   2. Edit `.env` with your AWS credentials
+   - Copy `.env.example` to `.env`
+   - Edit `.env` with your AWS credentials
 
-```makefile
+```bash
 AWS_ACCESS_KEY_ID=your_access_key_here
 AWS_SECRET_ACCESS_KEY=your_secret_key_here
 S3_BUCKET_NAME=your_bucket_name_here
@@ -43,11 +44,13 @@ Run the Streamlit application:
 streamlit run app.py
 ```
 
-The application will open in your default web browser.
+The application will open in your default web browser. You'll need to enter the password to access the application functionality.
 
 ## Configuration
 
 The application uses environment variables for AWS credentials. These are loaded from the `.env` file using python-dotenv. For production deployments on Linux or cloud platforms, you can set these environment variables directly in your system or deployment platform.
+
+The default password is set in the application code. For production use, consider moving this to an environment variable as well.
 
 ## Security Note
 
