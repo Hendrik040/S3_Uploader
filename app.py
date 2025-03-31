@@ -86,9 +86,29 @@ def main():
         st.warning("Please enter the correct password to access the application.")
         return
 
-    # Select team
-    team_id = st.selectbox("Select Team", list(range(1, 13)))
-    folder = f"team{team_id}/"
+    # Select folder option
+    folder_option = st.radio("Select folder option", ["First year MBAN", "Dual Degree MBAN", "Custom folder path"])
+    
+    if folder_option == "First year MBAN":
+        st.info("Example: Your files will be stored in 'first_year_mban/your_file_name.pdf'")
+        default_folder = "first_year_mban"
+        custom_folder = st.text_input("Edit folder path if needed", default_folder)
+        folder = f"{custom_folder}/" if custom_folder else ""
+    elif folder_option == "Dual Degree MBAN":
+        st.info("Example: Your files will be stored in 'dual_degree_mban/your_file_name.pdf'")
+        default_folder = "dual_degree_mban"
+        custom_folder = st.text_input("Edit folder path if needed", default_folder)
+        folder = f"{custom_folder}/" if custom_folder else ""
+    else:  # Custom folder path
+        st.info("Example: If you previously used 'team1', enter 'team1' to access your files in that folder")
+        custom_folder = st.text_input("Enter your folder path", "")
+        folder = f"{custom_folder}/" if custom_folder else ""
+    
+    if not folder:
+        st.warning("Please enter a valid folder path")
+        return
+
+    st.write(f"Current folder path: {folder}")
 
     # File uploader
     uploaded_file = st.file_uploader("Choose a file", type=["txt", "pdf", "png", "jpg", "jpeg"])
@@ -101,6 +121,16 @@ def main():
 
     # List and delete files
     st.subheader("Files in your folder")
+    
+    # Add explanation about file deletion
+    st.info("""
+    **How to delete files:**
+    1. Your files are listed below
+    2. Each file has a 'Delete' button next to it
+    3. Click the 'Delete' button to remove the file from the S3 bucket
+    4. A success message will appear once the file is deleted
+    """)
+    
     files = list_files_in_folder(S3_BUCKET_NAME, folder)
     if files:
         for file in files:
