@@ -10,6 +10,9 @@ A Streamlit application that allows users to upload, view, and delete files in a
 - **Secure**: Uses environment variables for AWS credentials
 - **Password Protected**: Access control via password authentication
 
+- sample stuff
+  
+
 ## Requirements
 
 - Python 3.7+
